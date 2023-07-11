@@ -7,6 +7,10 @@
   "peerDependencies": {
     "eslint": ">=8.0.0"
   },
+  "repository": {
+    "type": "git", 
+    "url": "https://github.com/rubenfgr/eslint-rule-nest-decorator-scope-request"
+  },
   "keywords": [
     "eslint",
     "eslintplugin",
