@@ -10,23 +10,22 @@ module.exports = {
     messages: {
       scopeMessage:
         "Decorator {{ decorator }} require scope REQUEST, actual scope is '{{ scope }}'",
+      scopeRequiredMessage:
+        "Decorator {{ decorator }} require property scope with value Scope.REQUEST",
     },
   },
   create(context) {
     return {
       ClassDeclaration(node) {
         if (node && node.decorators) {
-          let isValid = true;
           let scope = "Without SCOPE";
-          let decorator = "Without DECORATOR";
+          let decoratorName = "Without DECORATOR";
 
           for (let decorator of node.decorators) {
-            if (!isValid) continue;
-
-            decorator = decorator.expression?.callee?.name ?? "";
+            decoratorName = decorator.expression?.callee?.name ?? "";
 
             if (
-              !["Controller", "Injectable", "Processor"].includes(decorator)
+              !["Controller", "Injectable", "Processor"].includes(decoratorName)
             ) {
               continue;
             }
@@ -39,29 +38,43 @@ module.exports = {
               const argument = decorator.expression.arguments[0];
 
               if (argument.properties) {
-                for (let property of argument.properties) {
-                  const key = property.key?.name;
+                const property = argument.properties.find(
+                  (p) => p.key?.name === "scope"
+                );
 
-                  if (key === "scope") {
-                    scope = property.value ?? property.value.property?.name;
-                    if (scope !== "REQUEST") {
-                      isValid = false;
-                    }
+                if (!property) {
+                  context.report({
+                    node,
+                    messageId: "scopeRequiredMessage",
+                    data: {
+                      decorator: decoratorName,
+                    },
+                  });
+                }
+
+                if (property) {
+                  scope = property.value.property?.name;
+                  if (scope !== "REQUEST") {
+                    context.report({
+                      node,
+                      messageId: "scopeMessage",
+                      data: {
+                        scope,
+                        decorator: decoratorName,
+                      },
+                    });
                   }
                 }
+              } else {
+                context.report({
+                  node,
+                  messageId: "scopeRequiredMessage",
+                  data: {
+                    decorator: decoratorName,
+                  },
+                });
               }
             }
-          }
-
-          if (!isValid) {
-            context.report({
-              node,
-              messageId: "scopeMessage",
-              data: {
-                scope,
-                decorator,
-              },
-            });
           }
         }
       },
