@@ -1,6 +1,6 @@
 {
-  "name": "@seyte/eslint-plugin-nest-decorator-scope-request",
-  "version": "1.0.2",
+  "name": "eslint-plugin-nest_decorator_scope_request",
+  "version": "1.0.3",
   "description": "ESLint plugin for enforce decorators scope REQUEST",
   "main": "eslint-plugin-nest-decorator-scope-request.js",
   "scripts": {},

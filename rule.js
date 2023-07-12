@@ -3,7 +3,7 @@ module.exports = {
     type: "problem",
     docs: {
       description:
-        "Enforce that decorators Controller, Injectable, Processor, CommandHandler, QueryHandler have scope configured as Scope.REQUEST",
+        "Enforce that decorators Controller, Injectable, Processor have scope configured as Scope.REQUEST",
     },
     fixable: "code",
     schema: [],
@@ -26,13 +26,7 @@ module.exports = {
             decorator = decorator.expression?.callee?.name ?? "";
 
             if (
-              ![
-                "Controller",
-                "Injectable",
-                "Processor",
-                "CommandHandler",
-                "QueryHandler",
-              ].includes(decorator)
+              !["Controller", "Injectable", "Processor"].includes(decorator)
             ) {
               continue;
             }
